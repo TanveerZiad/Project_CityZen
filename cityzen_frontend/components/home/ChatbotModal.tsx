@@ -17,12 +17,12 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, chatLoading]);
 
-  // Auto-resize textarea based on content
+  // Auto-resize textarea based on content (Height increased from 128px to 200px)
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "44px"; // Reset to min-height
       const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = scrollHeight > 128 ? "128px" : `${scrollHeight}px`;
+      textareaRef.current.style.height = scrollHeight > 200 ? "200px" : `${scrollHeight}px`;
     }
   }, [chatInput]);
 
@@ -30,7 +30,7 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
     if (!chatInput.trim()) return;
     
     const userMessage = chatInput.trim();
-    setChatInput(""); // Clear immediately for snappier UX
+    setChatInput(""); 
     setChatLoading(true);
     setChatError(null);
     setChatHistory((prev) => [...prev, { role: "user", content: userMessage }]);
@@ -64,9 +64,11 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
       className="fixed inset-0 z-[12000] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center transition-all sm:p-4" 
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <section className="relative flex w-full flex-col h-[100dvh] sm:h-auto sm:max-h-[85dvh] sm:max-w-lg sm:rounded-2xl border-t sm:border border-cyan-500/30 bg-slate-950/95 shadow-[0_0_40px_-10px_rgba(6,182,212,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      {/* HEIGHT UPDATE: Changed sm:h-auto sm:max-h-[85dvh] to sm:h-[95dvh] sm:max-h-[900px] 
+        This makes the modal much taller on desktop devices.
+      */}
+      <section className="relative flex w-full flex-col h-[100dvh] sm:h-[95dvh] sm:max-h-[900px] sm:max-w-lg sm:rounded-2xl border-t sm:border border-cyan-500/30 bg-slate-950/95 shadow-[0_0_40px_-10px_rgba(6,182,212,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Header - Glassmorphic with pulse indicator */}
         <header className="flex items-center justify-between border-b border-cyan-500/20 bg-slate-900/80 px-5 py-4 backdrop-blur-md z-10">
           <div className="flex items-center gap-3">
             <div className="relative flex h-2.5 w-2.5">
@@ -88,7 +90,6 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
           </button>
         </header>
 
-        {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-gradient-to-b from-slate-950 to-slate-900 scroll-smooth custom-scrollbar">
           {chatHistory.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center space-y-4 opacity-60">
@@ -131,11 +132,9 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
             </div>
           )}
           
-          {/* Invisible div to scroll to */}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
         <form
           className="flex items-end gap-3 border-t border-cyan-500/20 bg-slate-900/90 p-4 pb-safe-4 backdrop-blur-md"
           onSubmit={e => { e.preventDefault(); sendChatMessage(); }}
@@ -159,7 +158,8 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
             value={chatInput}
             onChange={e => setChatInput(e.target.value)}
             disabled={chatLoading}
-            style={{ minHeight: '44px', maxHeight: '128px' }}
+            // HEIGHT UPDATE: Changed maxHeight to 200px
+            style={{ minHeight: '44px', maxHeight: '200px' }}
             onKeyDown={e => { 
               if (e.key === "Enter" && !e.shiftKey) { 
                 e.preventDefault(); 
@@ -186,14 +186,4 @@ export default function ChatbotModal({ isOpen, onClose }: { isOpen: boolean; onC
     </div>,
     document.body
   );
-
-
-
-
-
-
-
-
-
-  
 }
